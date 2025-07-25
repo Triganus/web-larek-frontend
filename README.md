@@ -167,6 +167,5 @@ interface IProduct {
 
 ---
 
-## Дополнительно
 
 
