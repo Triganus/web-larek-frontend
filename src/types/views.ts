@@ -4,7 +4,7 @@ import { IEvents } from './events';
 // Базовый интерфейс компонента
 export interface IComponent {
     container: HTMLElement;
-    render(data?: any): HTMLElement;
+    render(data?: unknown): HTMLElement;
 }
 
 // Интерфейс модального окна
@@ -16,7 +16,7 @@ export interface IModalView {
 }
 
 // Интерфейс базовой формы
-export interface IFormView<T = any> {
+export interface IFormView<T = unknown> {
     valid: boolean;
     errors: string[];
     render(data: Partial<T>): HTMLElement;
@@ -55,7 +55,7 @@ export interface IPresenter {
 }
 
 // Универсальный тип для обработчиков событий в представлениях
-export type EventHandler<T = any> = (data?: T) => void;
+export type EventHandler<T = unknown> = (data?: T) => void;
 
 // Интерфейс для компонентов с событиями
 export interface IEventComponent extends IComponent {

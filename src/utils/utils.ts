@@ -2,11 +2,11 @@ export function pascalToKebab(value: string): string {
     return value.replace(/([a-z0–9])([A-Z])/g, "$1-$2").toLowerCase();
 }
 
-export function isSelector(x: any): x is string {
+export function isSelector(x: unknown): x is string {
     return (typeof x === "string") && x.length > 1;
 }
 
-export function isEmpty(value: any): boolean {
+export function isEmpty(value: unknown): boolean {
     return value === null || value === undefined;
 }
 
@@ -49,7 +49,7 @@ export function cloneTemplate<T extends HTMLElement>(query: string | HTMLTemplat
     return template.content.firstElementChild.cloneNode(true) as T;
 }
 
-export function bem(block: string, element?: string, modifier?: string): { name: string, class: string } {
+export function bem(block: string, element?: string, modifier?: string): { name: string; class: string } {
     let name = block;
     if (element) name += `__${element}`;
     if (modifier) name += `_${modifier}`;
@@ -81,10 +81,10 @@ export function setElementData<T extends Record<string, unknown> | object>(el: H
 /**
  * Получает типизированные данные из dataset атрибутов элемента
  */
-export function getElementData<T extends Record<string, unknown>>(el: HTMLElement, scheme: Record<string, Function>): T {
+export function getElementData<T extends Record<string, unknown>>(el: HTMLElement, scheme: Record<string, (value: string) => unknown>): T {
     const data: Partial<T> = {};
     for (const key in el.dataset) {
-        data[key as keyof T] = scheme[key](el.dataset[key]);
+        data[key as keyof T] = scheme[key](el.dataset[key]) as T[keyof T];
     }
     return data as T;
 }

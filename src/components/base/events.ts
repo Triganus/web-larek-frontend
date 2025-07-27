@@ -1,7 +1,7 @@
 // Хорошая практика даже простые типы выносить в алиасы
 // Зато когда захотите поменять это достаточно сделать в одном месте
 type EventName = string | RegExp;
-type Subscriber = Function;
+type Subscriber = (data?: any) => void;
 type EmitterEvent = {
     eventName: string,
     data: unknown

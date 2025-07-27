@@ -24,7 +24,7 @@ export type Optional<T> = T | undefined;
 export type PartialRecord<K extends keyof any, T> = Partial<Record<K, T>>;
 
 // Типы для валидации форм
-export interface ValidationRule<T = any> {
+export interface ValidationRule<T = unknown> {
     required?: boolean;
     minLength?: number;
     maxLength?: number;

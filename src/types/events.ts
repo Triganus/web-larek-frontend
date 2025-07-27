@@ -1,6 +1,6 @@
 // Типы для событийной системы
 export type EventName = string | RegExp;
-export type Subscriber = Function;
+export type Subscriber = (data?: any) => void;
 export type EmitterEvent = {
     eventName: string;
     data: unknown;
@@ -51,16 +51,16 @@ export interface ProductSelectedPayload {
 
 export interface ProductBasketPayload {
     productId: string;
-    product?: any; // будет типизировано в product.ts
+    product?: import('./product').IProduct;
 }
 
 export interface BasketChangedPayload {
-    items: any[]; // будет типизировано в basket.ts
+    items: import('./basket').IBasketItem[];
     total: number;
 }
 
 export interface OrderPayload {
-    order: any; // будет типизировано в order.ts
+    order: import('./order').IOrder;
 }
 
 export interface FormValidationPayload {
