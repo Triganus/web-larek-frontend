@@ -29,12 +29,12 @@ yarn build
 
 ### Используемый паттерн
 
-В проекте реализован паттерн **MVP (Model-View-Presenter)**:
+В проекте реализована **событийная архитектура** с элементами паттерна **Model-View**:
 - **Model** — бизнес-логика и данные (товары, корзина, заказ).
 - **View** — отображение и взаимодействие с DOM.
-- **Presenter** — посредник между Model и View, управляет логикой приложения.
+- **EventEmitter** — центральная событийная система для связи компонентов.
 
-Взаимодействие между слоями реализовано через событийную систему (EventEmitter).
+Вместо презентеров используется брокер событий, что обеспечивает слабую связанность компонентов и высокую расширяемость системы.
 
 ---
 
@@ -57,48 +57,45 @@ src/
 
 ## Модели данных
 
-### Product
+### Каталог товаров
 
 ```typescript
-class Product {
-  id: string;
-  title: string;
-  description: string;
-  price: number;
-  image: string;
-  category: string;
-
-  constructor(params: { id: string; title: string; description: string; price: number; image: string; category: string });
-  getFormattedPrice(): string;
+interface ICatalogModel {
+  products: IProduct[];
+  getProducts(): Promise<IProduct[]>;
+  getProduct(id: string): IProduct | undefined;
+  setProducts(products: ApiProduct[]): void;
 }
 ```
 
-### Basket
+### Корзина
 
 ```typescript
-class Basket {
-  items: Product[];
-
-  constructor(items?: Product[]);
-  addItem(product: Product): void;
-  removeItem(productId: string): void;
+interface IBasketModel {
+  items: Map<string, IBasketItem>;
+  add(product: IProduct): void;
+  remove(productId: string): void;
   clear(): void;
   getTotal(): number;
   getCount(): number;
+  getItems(): IBasketItem[];
+  contains(productId: string): boolean;
 }
 ```
 
-### Order
+### Заказ
 
 ```typescript
-class Order {
-  id: string;
-  items: Product[];
-  total: number;
-  status: 'pending' | 'completed' | 'cancelled';
-
-  constructor(params: { id: string; items: Product[]; total: number; status: 'pending' | 'completed' | 'cancelled' });
-  isValid(): boolean;
+interface IOrderModel {
+  order: IOrder;
+  setPayment(payment: PaymentMethod): void;
+  setEmail(email: string): void;
+  setPhone(phone: string): void;
+  setAddress(address: string): void;
+  validateOrder(): boolean;
+  validateContacts(): boolean;
+  clear(): void;
+  getOrderData(): IOrder;
 }
 ```
 
@@ -108,50 +105,144 @@ class Order {
 
 | Класс         | Назначение                                   |
 |---------------|----------------------------------------------|
-| ProductCard   | Отображение товара, кнопка «Купить»          |
-| CartView      | Список товаров в корзине, сумма, оформление  |
-| ModalWindow   | Модальное окно                               |
-| PaymentForm   | Форма оплаты и адреса                        |
-| ContactForm   | Форма контактов                              |
-| SuccessModal  | Модалка успешной покупки                     |
+| Card          | Отображение товара, кнопка «Купить»          |
+| Basket        | Список товаров в корзине, сумма, оформление  |
+| Modal         | Модальное окно                               |
+| OrderForm     | Форма оплаты и адреса                        |
+| ContactsForm  | Форма контактов                              |
+| Success       | Модалка успешной покупки                     |
+| Page          | Главная страница с каталогом                 |
 
 ---
 
 ## Презентеры
 
-| Класс             | Назначение                                      |
-|-------------------|-------------------------------------------------|
-| CatalogPresenter  | Управляет каталогом товаров                     |
-| BasketPresenter   | Управляет корзиной                              |
-| OrderPresenter    | Управляет процессом оформления заказа           |
+**Презентеры в данной архитектуре заменены событийной системой:**
+
+- Взаимодействие между компонентами происходит через события (EventEmitter)
+- Каждый компонент подписывается на необходимые события
+- При изменениях компоненты эмитят соответствующие события
+- Это обеспечивает слабую связанность между компонентами
 
 ---
 
 ## Взаимодействие слоёв
 
-- **View** реагирует на действия пользователя и вызывает методы **Presenter**.
-- **Presenter** обновляет **Model** и подписан на её события.
+Архитектура использует **событийную модель взаимодействия** вместо классических презентеров:
+
 - **Model** хранит данные и бизнес-логику, эмитит события при изменениях.
-- **Presenter** обновляет **View** при изменениях в **Model**.
+- **View** отображает данные и реагирует на действия пользователя, эмитит события.
+- **EventEmitter** связывает все компоненты через систему событий.
+- Компоненты слабо связаны — каждый знает только о событиях, но не о других компонентах.
+
+**Пример потока событий:**
+1. Пользователь кликает "Купить" → View эмитит `ProductAddedToBasket`
+2. BasketModel слушает событие → добавляет товар → эмитит `BasketChanged`
+3. BasketView слушает `BasketChanged` → обновляет отображение счетчика
+4. PageView слушает `BasketChanged` → обновляет счетчик в шапке
 
 ---
 
 ## Типы данных
 
-- Все типы и интерфейсы объявлены в `src/types`.
-- Используются строгие типы, дженерики, объединения.
-- Не используется `any`, не дублируются типы, не ослабляется контроль типов.
+Типы и интерфейсы разделены по файлам в директории `src/types/`:
 
-**Пример интерфейса:**
+- `api.ts` — типы для API запросов и ответов
+- `events.ts` — типы событийной системы и перечисления событий
+- `product.ts` — типы для товаров и каталога
+- `basket.ts` — типы для корзины покупок
+- `order.ts` — типы для заказов и форм
+- `views.ts` — типы для представлений и компонентов
+- `index.ts` — общий экспорт всех типов
+
+Используются строгие типы, дженерики, объединения. Не используется `any`, типы не дублируются.
+
+**Примеры ключевых интерфейсов:**
+
 ```typescript
+// API типы
+interface ApiProduct {
+  id: string;
+  title: string;
+  description: string;
+  price: number | null;
+  image: string;
+  category: ProductCategory;
+}
+
+// Модели данных
 interface IProduct {
   id: string;
   title: string;
   description: string;
-  price: number;
+  price: number | null;
+  image: string;
+  category: ProductCategory;
+}
+
+// Представления
+interface IProductView {
+  id: string;
+  title: string;
+  price: string; // отформатированная цена
   image: string;
   category: string;
+  button?: {
+    text: string;
+    disabled: boolean;
+  };
 }
+
+// События
+enum AppEvent {
+  ProductSelected = 'product:selected',
+  BasketChanged = 'basket:changed',
+  OrderSubmitted = 'order:submitted'
+}
+```
+
+---
+
+## Событийная система
+
+В основе архитектуры лежит **EventEmitter** — брокер событий для связи компонентов:
+
+### Основные события приложения
+
+```typescript
+enum AppEvent {
+  // События товаров
+  ProductSelected = 'product:selected',
+  ProductAddedToBasket = 'product:added-to-basket',
+  
+  // События корзины
+  BasketChanged = 'basket:changed',
+  BasketOpened = 'basket:opened',
+  
+  // События заказа
+  OrderSubmitted = 'order:submitted',
+  OrderCompleted = 'order:completed',
+  
+  // События модального окна
+  ModalOpened = 'modal:opened',
+  ModalClosed = 'modal:closed'
+}
+```
+
+### Использование событий
+
+```typescript
+// Подписка на событие
+events.on(AppEvent.ProductAddedToBasket, (data: ProductBasketPayload) => {
+  // Обработка добавления товара в корзину
+});
+
+// Эмиссия события
+events.emit(AppEvent.BasketChanged, {
+  items: basketItems,
+  total: totalAmount,
+  count: itemsCount
+});
 ```
 
 ---
