@@ -1,21 +1,7 @@
 import './scss/styles.scss';
 
-// Импорт базовых абстракций (остаются как архитектурная основа)
+// Импорт базовой абстракции для демонстрации событийной архитектуры
 import { EventEmitter } from './components/base/events';
-import { Component } from './components/base/component';
-import { Model } from './components/base/Model';
-import { Api } from './components/base/api';
-
-// Импорт типов для демонстрации архитектуры
-import { 
-    IProduct, 
-    IBasket, 
-    IOrder, 
-    AppEvent,
-    ICatalogModel,
-    IBasketModel,
-    IOrderModel 
-} from './types';
 
 // Точка входа приложения
 // В будущих спринтах здесь будет реализован Presenter,
@@ -23,11 +9,12 @@ import {
 
 console.log('Веб-ларёк: Архитектура и типы готовы к реализации!');
 
-// Демонстрация использования базовых абстракций
+// Демонстрация использования событийной системы
 const events = new EventEmitter();
+console.log('EventEmitter инициализирован:', events.constructor.name);
 
 // Здесь будут инициализированы:
-// - API клиент для работы с сервером
-// - Модели данных (Catalog, Basket, Order)  
-// - Компоненты представления (Card, Modal, Form и др.)
+// - API клиент для работы с сервером (extends Api)
+// - Модели данных (extends Model): Catalog, Basket, Order  
+// - Компоненты представления (extends Component): Card, Modal, Form и др.
 // - Настройка взаимодействия через события

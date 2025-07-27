@@ -21,6 +21,8 @@ export * from './views';
 // Дополнительные типы для удобства разработки
 export type Nullable<T> = T | null;
 export type Optional<T> = T | undefined;
+// any используется в системном типе для совместимости с Record<K, T>
+// где K может быть любым ключом (string | number | symbol)
 export type PartialRecord<K extends keyof any, T> = Partial<Record<K, T>>;
 
 // Типы для валидации форм

@@ -1,5 +1,7 @@
 // Типы для событийной системы
 export type EventName = string | RegExp;
+// any используется намеренно: события могут нести данные любого типа,
+// конкретная типизация происходит в местах использования через дженерики
 export type Subscriber = (data?: any) => void;
 export type EmitterEvent = {
     eventName: string;
