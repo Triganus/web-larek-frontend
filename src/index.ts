@@ -57,6 +57,36 @@ const basket = new Basket(cloneTemplate(basketTemplate), events);
 const order = new OrderForm(cloneTemplate(orderTemplate), events);
 const contacts = new ContactsForm(cloneTemplate(contactsTemplate), events);
 
+// Переменная для отслеживания, открыта ли корзина
+let isBasketOpen = false;
+
+// Функция для отрисовки содержимого корзины
+function renderBasket() {
+    const basketItems = basketModel.getItems().map((item, index) => {
+        const card = new Card('card', cloneTemplate(cardBasketTemplate), {
+            onClick: () => {
+                basketModel.remove(item.product.id);
+            }
+        });
+
+        const cardData: Partial<IProductView> = {
+            id: item.product.id,
+            title: item.product.title,
+            price: formatPrice(item.product.price)
+        };
+        card.index = index + 1;
+        card.render(cardData);
+
+        return card.container;
+    });
+
+    basket.render({
+        items: basketItems,
+        total: basketModel.getTotal(),
+        selected: basketModel.getCount() > 0
+    });
+}
+
 // Дополнительные утилиты
 function createCard(product: IProduct, actions?: { onClick: (event: MouseEvent) => void }): Card {
     const cardElement = cloneTemplate(cardCatalogTemplate);
@@ -125,34 +155,16 @@ events.on('card:select', (product: IProduct) => {
 // Изменилась корзина
 events.on('basket:changed', () => {
     page.counter = basketModel.getCount();
+    // Если корзина открыта, перерисовываем её содержимое
+    if (isBasketOpen) {
+        renderBasket();
+    }
 });
 
 // Открыть корзину
 events.on('basket:open', () => {
-    const basketItems = basketModel.getItems().map((item, index) => {
-        const card = new Card('card', cloneTemplate(cardBasketTemplate), {
-            onClick: () => {
-                basketModel.remove(item.product.id);
-            }
-        });
-
-        const cardData: Partial<IProductView> = {
-            id: item.product.id,
-            title: item.product.title,
-            price: formatPrice(item.product.price)
-        };
-        card.index = index + 1;
-        card.render(cardData);
-
-        return card.container;
-    });
-
-    basket.render({
-        items: basketItems,
-        total: basketModel.getTotal(),
-        selected: basketModel.getCount() > 0
-    });
-
+    isBasketOpen = true;
+    renderBasket();
     modal.render({ content: basket.container });
 });
 
@@ -248,8 +260,9 @@ events.on('modal:open', () => {
     page.locked = true;
 });
 
-// ... и разблокируем
+// Закрытие модального окна
 events.on('modal:close', () => {
+    isBasketOpen = false;
     page.locked = false;
 });
 
