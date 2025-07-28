@@ -3,18 +3,16 @@ import { IEvents } from '../events';
 import { 
     IOrder, 
     IOrderModel, 
+    IOrderData,
     IBasketItem, 
     PaymentMethod 
 } from '../../../types';
 
-export class OrderModel extends Model<IOrder> implements IOrderModel {
-    order: IOrder = {
-        items: [],
-        total: 0
-    };
+export class OrderModel extends Model<IOrderData> implements IOrderModel {
+    order: IOrderData = {};
 
     constructor(events: IEvents) {
-        super({items: [], total: 0}, events);
+        super({}, events);
     }
 
     setPayment(payment: PaymentMethod): void {
@@ -37,15 +35,6 @@ export class OrderModel extends Model<IOrder> implements IOrderModel {
         this.emitChanges('order:changed', this.order);
     }
 
-    setItems(items: IBasketItem[]): void {
-        this.order.items = items;
-        this.order.total = items.reduce(
-            (total, item) => total + (item.product.price || 0) * item.quantity, 
-            0
-        );
-        this.emitChanges('order:changed', this.order);
-    }
-
     validateOrder(): boolean {
         return !!(this.order.payment && this.order.address?.trim());
     }
@@ -55,15 +44,16 @@ export class OrderModel extends Model<IOrder> implements IOrderModel {
     }
 
     clear(): void {
-        this.order = {
-            items: [],
-            total: 0
-        };
+        this.order = {};
         this.emitChanges('order:changed', this.order);
     }
 
-    getOrderData(): IOrder {
-        return { ...this.order };
+    getOrderData(items: IBasketItem[], total: number): IOrder {
+        return { 
+            ...this.order,
+            items,
+            total
+        };
     }
 
     getErrors(): string[] {

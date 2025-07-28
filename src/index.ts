@@ -170,7 +170,6 @@ events.on('basket:open', () => {
 
 // Открыть форму заказа
 events.on('order:open', () => {
-    orderModel.setItems(basketModel.getItems());
     modal.render({
         content: order.render({
             valid: false,
@@ -225,7 +224,7 @@ events.on('contacts:change', (data: { field: keyof typeof orderModel.order, valu
 // Отправлена форма контактов
 events.on('contacts:submit', () => {
     if (orderModel.validateContacts()) {
-        const orderData = orderModel.getOrderData();
+        const orderData = orderModel.getOrderData(basketModel.getItems(), basketModel.getTotal());
         const orderRequest: ApiOrderRequest = {
             payment: orderData.payment!,
             email: orderData.email!,

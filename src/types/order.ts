@@ -12,18 +12,25 @@ export interface IOrder {
     total: number;
 }
 
+// Частичный тип для внутреннего состояния заказа (без items и total)
+export interface IOrderData {
+    payment?: PaymentMethod;
+    email?: string;
+    phone?: string;
+    address?: string;
+}
+
 // Интерфейс модели заказа
 export interface IOrderModel {
-    order: IOrder;
+    order: IOrderData;
     setPayment(payment: PaymentMethod): void;
     setEmail(email: string): void;
     setPhone(phone: string): void;
     setAddress(address: string): void;
-    setItems(items: IBasketItem[]): void;
     validateOrder(): boolean;
     validateContacts(): boolean;
     clear(): void;
-    getOrderData(): IOrder;
+    getOrderData(items: IBasketItem[], total: number): IOrder;
 }
 
 // Интерфейс формы заказа (адрес и способ оплаты)
