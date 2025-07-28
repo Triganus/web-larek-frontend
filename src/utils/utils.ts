@@ -66,7 +66,7 @@ export function getObjectProperties(obj: object, filter?: (name: string, prop: P
         )
     )
         .filter(([name, prop]: [string, PropertyDescriptor]) => filter ? filter(name, prop) : (name !== 'constructor'))
-        .map(([name, prop]) => name);
+        .map(([name]) => name);
 }
 
 /**
@@ -132,4 +132,14 @@ export function createElement<
         }
     }
     return element;
+}
+
+/**
+ * Форматирование цены
+ */
+export function formatPrice(price: number | null): string {
+    if (price === null) {
+        return '';
+    }
+    return price.toString();
 }
