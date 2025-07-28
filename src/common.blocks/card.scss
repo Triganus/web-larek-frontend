@@ -57,6 +57,7 @@
   }
   &__category {
     display: inline-block;
+    align-self: flex-start;
     padding: 0.5rem 1.25rem;
     border-radius: 2.5rem;
     margin-bottom: 12px;
