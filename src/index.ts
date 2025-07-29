@@ -125,6 +125,11 @@ events.on('catalog:changed', () => {
 events.on('card:select', (product: IProduct) => {
     const card = new Card('card', cloneTemplate(cardPreviewTemplate), {
         onClick: () => {
+            // Для "Мамка-таймер" кнопка недоступна
+            if (product.title === 'Мамка-таймер') {
+                return;
+            }
+            
             if (basketModel.contains(product.id)) {
                 basketModel.remove(product.id);
             } else {
@@ -142,8 +147,10 @@ events.on('card:select', (product: IProduct) => {
         image: product.image,
         category: product.category,
         button: {
-            text: basketModel.contains(product.id) ? 'Убрать из корзины' : 'В корзину',
-            disabled: product.price === null
+            text: product.title === 'Мамка-таймер' 
+                ? 'Недоступно' 
+                : basketModel.contains(product.id) ? 'Убрать из корзины' : 'В корзину',
+            disabled: product.price === null || product.title === 'Мамка-таймер'
         }
     };
 
