@@ -31,6 +31,9 @@ export interface IOrderModel {
     validateContacts(): boolean;
     clear(): void;
     getOrderData(items: IBasketItem[], total: number): IOrder;
+    getOrderErrors(): string[];      // Ошибки первого шага
+    getContactsErrors(): string[];   // Ошибки второго шага
+    getErrors(): string[];           // Все ошибки
 }
 
 // Интерфейс формы заказа (адрес и способ оплаты)

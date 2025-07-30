@@ -56,7 +56,7 @@ export class OrderModel extends Model<IOrderData> implements IOrderModel {
         };
     }
 
-    getErrors(): string[] {
+    getOrderErrors(): string[] {
         const errors: string[] = [];
         
         if (!this.order.payment) {
@@ -66,6 +66,12 @@ export class OrderModel extends Model<IOrderData> implements IOrderModel {
         if (!this.order.address?.trim()) {
             errors.push('Необходимо указать адрес доставки');
         }
+        
+        return errors;
+    }
+
+    getContactsErrors(): string[] {
+        const errors: string[] = [];
         
         if (!this.order.email?.trim()) {
             errors.push('Необходимо указать email');
@@ -78,5 +84,10 @@ export class OrderModel extends Model<IOrderData> implements IOrderModel {
         }
         
         return errors;
+    }
+
+    getErrors(): string[] {
+        // Общий метод, возвращающий все ошибки (для совместимости)
+        return [...this.getOrderErrors(), ...this.getContactsErrors()];
     }
 }

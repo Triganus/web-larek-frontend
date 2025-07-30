@@ -19,15 +19,15 @@ export class BasketModel extends Model<IBasket> implements IBasketModel {
             return; // Бесценные товары нельзя добавить в корзину
         }
 
+        // Согласно брифу, не должно быть более одного товара каждого вида
         if (this.items.has(product.id)) {
-            const item = this.items.get(product.id)!;
-            item.quantity += 1;
-        } else {
-            this.items.set(product.id, {
-                product,
-                quantity: 1
-            });
+            return; // Товар уже в корзине, не добавляем повторно
         }
+
+        this.items.set(product.id, {
+            product,
+            quantity: 1
+        });
         
         this.emitChanges('basket:changed', {
             items: this.getItems(),
@@ -58,16 +58,13 @@ export class BasketModel extends Model<IBasket> implements IBasketModel {
 
     getTotal(): number {
         return Array.from(this.items.values()).reduce(
-            (total, item) => total + (item.product.price || 0) * item.quantity, 
+            (total, item) => total + (item.product.price || 0), 
             0
         );
     }
 
     getCount(): number {
-        return Array.from(this.items.values()).reduce(
-            (count, item) => count + item.quantity, 
-            0
-        );
+        return this.items.size; // Просто количество уникальных товаров
     }
 
     getItems(): IBasketItem[] {

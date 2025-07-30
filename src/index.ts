@@ -198,7 +198,7 @@ events.on('order:change', (data: { field: keyof typeof orderModel.order, value: 
 
     order.render({
         valid: orderModel.validateOrder(),
-        errors: orderModel.getErrors()
+        errors: orderModel.getOrderErrors()
     });
 });
 
@@ -224,7 +224,7 @@ events.on('contacts:change', (data: { field: keyof typeof orderModel.order, valu
 
     contacts.render({
         valid: orderModel.validateContacts(),
-        errors: orderModel.getErrors()
+        errors: orderModel.getContactsErrors()
     });
 });
 
