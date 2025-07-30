@@ -1,11 +1,11 @@
-import { Model } from '../Model';
-import { IEvents } from '../events';
+import { Model } from '../base/Model';
+import { IEvents } from '../base/events';
 import { 
     IBasket, 
     IBasketModel, 
     IBasketItem, 
     IProduct 
-} from '../../../types';
+} from '../../types';
 
 export class BasketModel extends Model<IBasket> implements IBasketModel {
     items = new Map<string, IBasketItem>();

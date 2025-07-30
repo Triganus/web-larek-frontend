@@ -1,10 +1,10 @@
-import { Model } from '../Model';
-import { IEvents } from '../events';
+import { Model } from '../base/Model';
+import { IEvents } from '../base/events';
 import { 
     IProduct, 
     ICatalogModel, 
     ApiProduct 
-} from '../../../types';
+} from '../../types';
 
 export class CatalogModel extends Model<IProduct[]> implements ICatalogModel {
     products: IProduct[] = [];

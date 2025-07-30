@@ -2,21 +2,21 @@ import './scss/styles.scss';
 
 // Импорт базовых классов
 import { EventEmitter } from './components/base/events';
-import { WebLarekAPI } from './components/base/api/WeblarekAPI';
+import { WebLarekAPI } from './components/api/WeblarekAPI';
 
 // Импорт моделей
-import { CatalogModel } from './components/base/models/Catalog';
-import { BasketModel } from './components/base/models/Basket';
-import { OrderModel } from './components/base/models/Order';
+import { CatalogModel } from './components/models/Catalog';
+import { BasketModel } from './components/models/Basket';
+import { OrderModel } from './components/models/Order';
 
 // Импорт представлений
-import { Page } from './components/base/views/Page';
-import { Card } from './components/base/views/Card';
-import { Modal } from './components/base/views/Modal';
-import { Basket } from './components/base/views/Basket';
-import { OrderForm } from './components/base/views/OrderForm';
-import { ContactsForm } from './components/base/views/ContactsForm';
-import { Success } from './components/base/views/Success';
+import { Page } from './components/views/Page';
+import { Card } from './components/views/Card';
+import { Modal } from './components/views/Modal';
+import { Basket } from './components/views/Basket';
+import { OrderForm } from './components/views/OrderForm';
+import { ContactsForm } from './components/views/ContactsForm';
+import { Success } from './components/views/Success';
 
 // Импорт типов
 import { 

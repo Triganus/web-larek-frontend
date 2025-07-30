@@ -1,10 +1,10 @@
-import { Api, ApiListResponse } from '../api';
+import { Api, ApiListResponse } from '../base/api';
 import { 
     IWebLarekAPI, 
     ApiProduct, 
     ApiOrderRequest, 
     ApiOrderResponse 
-} from '../../../types';
+} from '../../types';
 
 export class WebLarekAPI extends Api implements IWebLarekAPI {
     readonly cdn: string;

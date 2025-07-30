@@ -1,5 +1,5 @@
-import { Component } from '../component';
-import { IEvents } from '../events';
+import { Component } from '../base/component';
+import { IEvents } from '../base/events';
 
 interface IBasketView {
     items: HTMLElement[];

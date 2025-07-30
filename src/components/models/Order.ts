@@ -1,12 +1,12 @@
-import { Model } from '../Model';
-import { IEvents } from '../events';
+import { Model } from '../base/Model';
+import { IEvents } from '../base/events';
 import { 
     IOrder, 
     IOrderModel, 
     IOrderData,
     IBasketItem, 
     PaymentMethod 
-} from '../../../types';
+} from '../../types';
 
 export class OrderModel extends Model<IOrderData> implements IOrderModel {
     order: IOrderData = {};

@@ -1,5 +1,5 @@
-import { Component } from '../component';
-import { IProductView } from '../../../types';
+import { Component } from '../base/component';
+import { IProductView } from '../../types';
 
 const CategoryClass: Record<string, string> = {
     'софт-скил': 'card__category_soft',

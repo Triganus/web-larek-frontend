@@ -1,6 +1,6 @@
 import { Form } from './Form';
-import { IEvents } from '../events';
-import { IContactsForm } from '../../../types';
+import { IEvents } from '../base/events';
+import { IContactsForm } from '../../types';
 
 export class ContactsForm extends Form<IContactsForm> {
     protected _email: HTMLInputElement;
