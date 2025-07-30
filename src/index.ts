@@ -125,8 +125,8 @@ events.on('catalog:changed', () => {
 events.on('card:select', (product: IProduct) => {
     const card = new Card('card', cloneTemplate(cardPreviewTemplate), {
         onClick: () => {
-            // Для "Мамка-таймер" кнопка недоступна
-            if (product.title === 'Мамка-таймер') {
+            // Бесценные товары нельзя добавить в корзину
+            if (product.price === null) {
                 return;
             }
             
@@ -147,10 +147,10 @@ events.on('card:select', (product: IProduct) => {
         image: product.image,
         category: product.category,
         button: {
-            text: product.title === 'Мамка-таймер' 
+            text: product.price === null 
                 ? 'Недоступно' 
                 : basketModel.contains(product.id) ? 'Убрать из корзины' : 'В корзину',
-            disabled: product.price === null || product.title === 'Мамка-таймер'
+            disabled: product.price === null
         }
     };
 
